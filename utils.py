@@ -4,12 +4,14 @@ from notion_client import Client
 
 load_dotenv()
 
+# Validates the notion bot integration client
 def get_notion_client():
     token = Client(auth=os.getenv('NOTION_TOKEN'))
     if not token:
         raise ValueError("CRITICAL ERROR: NOTION_TOKEN not found!")
     return token
 
+# Validates the internship, job, etc. database ID's
 def get_database_id(env_type):
     if env_type == 'internship':
         env_str = 'INTERNSHIP_DATABASE_ID'
@@ -23,12 +25,11 @@ def get_database_id(env_type):
         raise ValueError(f"CRITICAL ERROR: db_id not found! | env_str: {env_str}")
     return format_uuid(db_id) 
 
+# Validates test runs
 def is_test_run():
-    test_run = os.getenv('TEST_RUN', 'true').lower() == 'true'
-    if test_run is True:
-        print("---TEST_RUN Enabled---")
-    return test_run
+    return os.getenv('TEST_RUN', 'true').lower() == 'true'
 
+# Formats an DB ID to fit Notion's DB ID format.
 def format_uuid(id_str):
     if not id_str:
         return None
