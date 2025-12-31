@@ -1,3 +1,3 @@
-# job-application-automation
+# notion-application-automation
 
 Hi
