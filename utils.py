@@ -10,10 +10,17 @@ def get_notion_client():
         raise ValueError("CRITICAL ERROR: NOTION_TOKEN not found!")
     return token
 
-def get_database_id(env_str):
+def get_database_id(env_type):
+    if env_type == 'internship':
+        env_str = 'INTERNSHIP_DATABASE_ID'
+    elif env_type == 'job':
+        env_str = 'JOB_DATABASE_ID'
+    else:
+        raise ValueError(f"CRITICAL ERROR: env_type not found! | env_type: {env_type}")
+
     db_id = os.getenv(env_str)
     if not db_id:
-        raise ValueError(f"CRITICAL ERROR: {env_str} not found!")
+        raise ValueError(f"CRITICAL ERROR: db_id not found! | env_str: {env_str}")
     return format_uuid(db_id) 
 
 def is_test_run():

@@ -1,28 +1,13 @@
-import os
+import utils
 from datetime import datetime
-from dotenv import load_dotenv
-from notion_client import Client
 
-load_dotenv()
-notion = Client(auth=os.getenv('NOTION_TOKEN'))
-raw_db_id = os.getenv('JOB_DATABASE_ID')
-# getenv second parameter is a default value if None.
-TEST_RUN = os.getenv('TEST_RUN', 'true').lower() == 'true'
+notion = utils.get_notion_client()
+internship_db_id = utils.get_database_id('internship')
+job_db_id = utils.get_database_id('job')
+TEST_RUN = utils.is_test_run
 
-def format_uuid(id_str):
-    if not id_str:
-        return None
-    
-    # Removes any -'s and whitespaces
-    clean = id_str.replace("-", "").strip()
-
-    # Slice it into the 5 standard groups to make the FULL database_id
-    return f"{clean[:8]}-{clean[8:12]}-{clean[12:16]}-{clean[16:20]}-{clean[20:]}"
-
-database_id = format_uuid(raw_db_id)
-
-def fetch_and_update_jobs():
-    print("Fetching jobs...")
+def update_old_applications():
+    print("Fetching old applications...")
 
     filter_criteria = {
         "and": [
@@ -42,21 +27,31 @@ def fetch_and_update_jobs():
     }
 
     try:
+        filtered_applications = []
+
         response = notion.databases.query(
-            database_id = database_id, 
+            database_id = internship_db_id, 
+            filter = filter_criteria
+        )
+
+        filtered_applications.extend(response["results"])
+        print(f'Found {len(response["results"])} internship(s) that possibly need responses changed to \"Past 2+ Months\"')
+
+        response = notion.databases.query(
+            database_id = job_db_id, 
             filter = filter_criteria
         )
         
-        filtered_jobs = response["results"]
-        print(f'Found {len(filtered_jobs)} jobs that possibly need responses changed to \"Past 2+ Months\"')
+        filtered_applications.extend(response["results"])
+        print(f'Found {len(response["results"])} job(s) that possibly need responses changed to \"Past 2+ Months\"')
 
-        jobs_to_update = []
+        applications_to_update = []
         today = datetime.now()
 
-        for job in filtered_jobs:
-            job_id = job["id"]
+        for application in filtered_applications:
+            page_id = application["id"]
             try:
-                props = job["properties"]
+                props = application["properties"]
 
                 if not props["Company Name"]["title"]:
                     company_name = 'Unknown Company'
@@ -77,26 +72,27 @@ def fetch_and_update_jobs():
                 date_str = date_data["start"]
 
             except KeyError as e:
-                print(f'Error reading job properties: {e}')
+                print(f'Error reading application properties: {e}')
                 continue
 
             # CONVERSION & MATH
-            job_date = datetime.strptime(date_str, "%Y-%m-%d")
-            delta = today - job_date
+            application_date = datetime.strptime(date_str, "%Y-%m-%d")
+            delta = today - application_date
             days_passed = delta.days
 
             if days_passed >= 60:
-                print(f'Old job found, appending it to jobs_to_update: {company_name} | {role_position}')
-                jobs_to_update.append({"job_id": job_id, "company": company_name, "role": role_position})
+                print(f'Old application found, appending it to applications_to_update: {company_name} | {role_position}')
+                applications_to_update.append({"page_id": page_id, "company": company_name, "role": role_position})
             else:
                 continue
 
-        for job in jobs_to_update:
-            page_id = job["job_id"]
-            company_name = job["company"]
-            role_position = job["role"]
+        for application in applications_to_update:
+            page_id = application["page_id"]
+            company_name = application["company"]
+            role_position = application["role"]
+        
             if TEST_RUN:
-                print(f'TEST_RUN: Updating job: {company_name} | {role_position}')
+                print(f'TEST_RUN: Updating application: {company_name} | {role_position}')
             else:
                 print(f'Updating job: {company_name} | {role_position}')
             
@@ -115,4 +111,4 @@ def fetch_and_update_jobs():
         print(f'CRITICAL ERROR: {e}')
 
 if __name__ == '__main__':
-    fetch_and_update_jobs()
+    update_old_applications()

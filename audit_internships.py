@@ -6,20 +6,8 @@ from notion_client import Client
 
 load_dotenv()
 notion = Client(auth=os.getenv('NOTION_TOKEN'))
-raw_db_id = os.getenv('INTERNSHIP_DATABASE_ID')
+database_id = os.getenv('INTERNSHIP_DATABASE_ID')
 TEST_RUN = os.getenv('TEST_RUN', 'true').lower() == 'true'
-
-def format_uuid(id_str):
-    if not id_str:
-        return None
-    
-    # Removes any -'s and whitespaces
-    clean = id_str.replace("-", "").strip()
-
-    # Slice it into the 5 standard groups to make the FULL database_id
-    return f"{clean[:8]}-{clean[8:12]}-{clean[12:16]}-{clean[16:20]}-{clean[20:]}"
-
-database_id = format_uuid(raw_db_id)
 
 def fetch_and_update_internships():
     response = notion.databases.query(
