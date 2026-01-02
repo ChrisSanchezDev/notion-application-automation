@@ -6,10 +6,10 @@ load_dotenv()
 
 # Validates the notion bot integration client
 def get_notion_client():
-    token = Client(auth=os.getenv('NOTION_TOKEN'))
-    if not token:
+    token_str = os.getenv('NOTION_TOKEN')
+    if not token_str:
         raise ValueError("CRITICAL ERROR: NOTION_TOKEN not found!")
-    return token
+    return Client(auth=os.getenv(token_str))
 
 # Validates the internship, job, etc. database ID's
 def get_database_id(env_type):
@@ -24,6 +24,9 @@ def get_database_id(env_type):
     if not db_id:
         raise ValueError(f"CRITICAL ERROR: db_id not found! | env_str: {env_str}")
     return format_uuid(db_id) 
+
+def get_logo_dev_pkey():
+    return os.getenv('LOGO_DEV_PKEY')
 
 # Validates test runs
 def is_test_run():
