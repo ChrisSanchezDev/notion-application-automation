@@ -9,7 +9,7 @@ def get_notion_client():
     token_str = os.getenv('NOTION_TOKEN')
     if not token_str:
         raise ValueError("CRITICAL ERROR: NOTION_TOKEN not found!")
-    return Client(auth=os.getenv(token_str))
+    return Client(auth=token_str)
 
 # Validates the internship, job, etc. database ID's
 def get_database_id(env_type):
