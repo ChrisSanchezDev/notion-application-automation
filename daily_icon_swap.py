@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# TODO: REPLACE UNUSABLE SYMBOLS IN URLS LIKE ', ?, etc.
 import requests
 import time
 import utils
