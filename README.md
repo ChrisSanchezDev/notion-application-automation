@@ -1,6 +1,6 @@
 # **HomeLab: notion-application-automation**
 
-As apart of my collection of **Homelab** projects, this project's goal is to automate specific tasks for my Application Tracker on Notion. Currently, there are two automated tasks that occur, all of which is happening on my Raspberry Pi 4 at home.
+As apart of my collection of **HomeLab** projects, this project's goal is to automate specific tasks for my Application Tracker on Notion. Currently, there are two automated tasks that occur, all of which is happening on my Raspberry Pi 4 at home.
 
 ### Scripts:
 * **daily_icon_swap.py (Daily at 00:00)**
