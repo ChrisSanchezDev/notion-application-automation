@@ -25,7 +25,7 @@ print()
 
 def update_null_icons():
     today = datetime.now().date()
-    print(f'Updating null icons for applications... Date: {today}')
+    print(f'-----Updating null icons for applications... Date: {today}-----')
 
     filter_criteria = {
         "property": COL_COMPANY,
@@ -98,7 +98,8 @@ def update_null_icons():
                             }
                         }
                     )
-
+    
+    print("---------------")
 
 if __name__ == '__main__':
     update_null_icons()

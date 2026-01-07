@@ -19,7 +19,7 @@ TEST_RUN = utils.is_test_run()
 
 def update_old_applications():
     today = datetime.now().date() # Makes it go from 2025-10-31 14:35:02 to 2025-10-31
-    print(f'Fetching old applications... Date: {today}')
+    print(f'-----Fetching old applications... Date: {today}-----')
 
     filter_criteria = {
         "and": [
@@ -120,6 +120,8 @@ def update_old_applications():
 
     except Exception as e:
         print(f'CRITICAL ERROR: {e}')
+    
+    print("---------------")
 
 if __name__ == '__main__':
     update_old_applications()
