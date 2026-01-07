@@ -4,6 +4,7 @@ import requests
 import time
 import utils
 import json # For testing
+from datetime import datetime
 
 TITLE_INTERNSHIP = 'Internship Application'
 TITLE_JOB = 'Job Application'
@@ -20,8 +21,11 @@ logo_dev_pkey = utils.get_logo_dev_pkey()
 TEST_RUN = utils.is_test_run()
 if TEST_RUN: print ('---TEST RUN ENABLED---')
 
+print()
+
 def update_null_icons():
-    print('Updating null icons for applications...')
+    today = datetime.now().date()
+    print(f'Updating null icons for applications... Date: {today}')
 
     filter_criteria = {
         "property": COL_COMPANY,

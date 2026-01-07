@@ -18,7 +18,8 @@ job_db_id = utils.get_database_id('job')
 TEST_RUN = utils.is_test_run()
 
 def update_old_applications():
-    print("Fetching old applications...")
+    today = datetime.now().date() # Makes it go from 2025-10-31 14:35:02 to 2025-10-31
+    print(f'Fetching old applications... Date: {today}')
 
     filter_criteria = {
         "and": [
@@ -57,7 +58,6 @@ def update_old_applications():
         print(f'Found {len(job_response["results"])} job(s) that possibly need responses changed to \"{RESPONSE_OLD}\"')
 
         applications_to_update = []
-        today = datetime.now().date() # Makes it go from 2025-10-31 14:35:02 to 2025-10-31
 
         for application in filtered_applications:
             page_id = application["id"]
